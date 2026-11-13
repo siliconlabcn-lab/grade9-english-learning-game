@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#153a5b">
+  <meta name="description" content="新人教版九年级上册期中英语一对二互动 PK 训练">
+  <title>九年级英语每日训练与课堂 PK</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="返回首页">
+      <span class="brand-mark">E</span>
+      <span><strong>ENGLISH ARENA</strong><small>九年级期中学习游戏</small></span>
+    </a>
+    <div class="top-actions">
+      <button class="icon-button" id="soundBtn" type="button" aria-pressed="true" title="音效">♪</button>
+      <button class="ghost-button" id="teacherBtn" type="button">教师控制</button>
+    </div>
+  </header>
+
+  <main id="app" class="app-shell">
+    <section id="homeScreen" class="screen home-screen">
+      <div class="home-hero">
+        <p class="eyebrow">PEP GRADE 9  UNITS 1–4</p>
+        <h1>每天练一点<br><span>课堂再来一场</span></h1>
+        <p>同一套知识体系，两种学习节奏。日常用 15 分钟稳步积累，课堂用一对二 PK 检验掌握情况。</p>
+      </div>
+      <div class="mode-grid">
+        <button class="mode-card daily" id="chooseDailyBtn" type="button">
+          <span class="mode-no">01</span>
+          <small>DAILY PRACTICE</small>
+          <h2>每日 15 分钟</h2>
+          <p>每天 10 题，自动换题和调节难度。记录连续学习、星星和薄弱知识点。</p>
+          <strong>开始今日练习 →</strong>
+        </button>
+        <button class="mode-card class" id="chooseClassBtn" type="button">
+          <span class="mode-no">02</span>
+          <small>CLASSROOM BATTLE</small>
+          <h2>课堂一对二 PK</h2>
+          <p>单人挑战双人战队，包含计时、抢答、协作卡、动态难度和教师控制。</p>
+          <strong>进入课堂模式 →</strong>
+        </button>
+      </div>
+    </section>
+
+    <section id="dailySetupScreen" class="screen daily-setup-screen hidden">
+      <button class="back-button" type="button" data-home>← 返回模式选择</button>
+      <div class="daily-setup-copy">
+        <p class="eyebrow">15 MINUTES A DAY</p>
+        <h1>今天的十道题<br>刚好够进步一点</h1>
+        <p>系统会从语法、完形、阅读、短文填空和新教材词汇中各选两题，并根据表现自动调整辅助量。</p>
+      </div>
+      <form id="dailySetupForm" class="setup-card daily-form">
+        <div class="today-badge"><span>今日任务</span><strong id="todayDate"></strong></div>
+        <label><span>孩子的名字</span><input id="dailyName" maxlength="10" value="英语小达人" autocomplete="off"></label>
+        <label><span>练习重点</span>
+          <select id="dailyFocus">
+            <option value="mixed" selected>智能混合  推荐</option>
+            <option value="grammar">语法与短文填空</option>
+            <option value="reading">完形与阅读理解</option>
+            <option value="vocab">新教材词汇</option>
+          </select>
+        </label>
+        <button class="primary-button wide" type="submit">开始 15 分钟练习 <span>→</span></button>
+        <button class="text-button wide hidden" id="dailyResumeBtn" type="button">继续今天未完成的练习</button>
+      </form>
+    </section>
+
+    <section id="setupScreen" class="screen setup-screen hidden">
+      <button class="back-button setup-back" type="button" data-home>← 返回模式选择</button>
+      <div class="hero-copy">
+        <p class="eyebrow">PEP GRADE 9  UNITS 1–4</p>
+        <h1>一人迎战两人<br><span>把期中复习变成一场比赛</span></h1>
+        <p class="lead">五关覆盖语法、完形填空、阅读理解、短文填空和新教材中考词汇。系统自动轮换答题、计时、抢答和结算。</p>
+        <div class="feature-strip" aria-label="训练特点">
+          <span>56 道闯关题</span><span>80–90 分钟</span><span>本机自动存档</span>
+        </div>
+      </div>
+
+      <form id="setupForm" class="setup-card">
+        <div class="setup-card-head">
+          <p>创建本局</p>
+          <span>1 VS 2</span>
+        </div>
+        <label>
+          <span>单人挑战者 A</span>
+          <input id="nameA" maxlength="10" value="挑战者 A" autocomplete="off">
+        </label>
+        <div class="team-fields">
+          <label>
+            <span>双人战队 B1</span>
+            <input id="nameB1" maxlength="10" value="队员 B1" autocomplete="off">
+          </label>
+          <label>
+            <span>双人战队 B2</span>
+            <input id="nameB2" maxlength="10" value="队员 B2" autocomplete="off">
+          </label>
+        </div>
+        <label>
+          <span>每题计时</span>
+          <select id="timeSelect">
+            <option value="20">20 秒  快速局</option>
+            <option value="30" selected>30 秒  标准局</option>
+            <option value="45">45 秒  思考局</option>
+          </select>
+        </label>
+        <label>
+          <span>学习模式</span>
+          <select id="modeSelect">
+            <option value="adaptive" selected>智能调节版  推荐</option>
+            <option value="friendly">基础友好版</option>
+            <option value="standard">标准对战版</option>
+          </select>
+        </label>
+        <button class="primary-button wide" type="submit">开始 PK <span>→</span></button>
+        <button class="text-button wide hidden" id="resumeBtn" type="button">继续上一次比赛</button>
+      </form>
+    </section>
+
+    <section id="dailyScreen" class="screen daily-screen hidden" aria-live="polite">
+      <div class="daily-top">
+        <div><p class="eyebrow">DAILY 15</p><h1><span id="dailyDisplayName">英语小达人</span> 的今日练习</h1></div>
+        <div class="daily-metrics">
+          <span>连续学习 <strong id="dailyStreak">1</strong> 天</span>
+          <span>今日星星 <strong id="dailyStars">0</strong> ★</span>
+          <span class="daily-clock"><strong id="dailyClock">15:00</strong></span>
+        </div>
+      </div>
+      <div class="daily-progress"><span id="dailyProgressBar"></span></div>
+      <div class="daily-layout">
+        <aside class="daily-map">
+          <p>今日路线</p>
+          <div id="dailyRoute"></div>
+          <div class="daily-level"><span>当前辅助</span><strong id="dailyLevel">基础扶持</strong><small>系统会自动调整</small></div>
+        </aside>
+        <section class="daily-question-card">
+          <div id="dailyPassage" class="passage-box hidden"></div>
+          <div class="question-topline"><span id="dailyType">GRAMMAR</span><span id="dailyCount">1 / 10</span></div>
+          <h2 id="dailyPrompt"></h2>
+          <button class="hint-button hidden" id="dailyHintBtn" type="button">给我一个提示</button>
+          <div class="hint-panel hidden" id="dailyHint"></div>
+          <div id="dailyAnswerArea" class="answer-area"></div>
+          <div id="dailyFeedback" class="feedback hidden"></div>
+          <div class="question-actions"><button class="primary-button hidden" id="dailyNextBtn" type="button">下一题 <span>→</span></button></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="dailyResultScreen" class="screen daily-result-screen hidden">
+      <p class="eyebrow">TODAY COMPLETE</p>
+      <h1>今天的 15 分钟完成了</h1>
+      <p id="dailyResultMessage"></p>
+      <div class="daily-result-ring"><strong id="dailyResultCorrect">0</strong><span>/ <b id="dailyResultTotal">10</b></span></div>
+      <div class="daily-result-grid" id="dailyResultStats"></div>
+      <div class="review-card"><div><h2>今天需要再看一眼</h2><p>错题会影响下一次练习的辅助难度。</p></div><div id="dailyReviewList" class="review-list"></div></div>
+      <div class="result-actions"><button class="ghost-button" data-home type="button">返回首页</button><button class="primary-button" id="dailyAgainBtn" type="button">重新练习今日错题</button></div>
+    </section>
+
+    <section id="gameScreen" class="screen game-screen hidden" aria-live="polite">
+      <div class="scoreboard">
+        <article class="score-card solo">
+          <div><span class="side-tag">SOLO</span><h2 id="displayA">挑战者 A</h2></div>
+          <strong id="scoreA">0</strong>
+          <div class="power-row">
+            <button id="timeBoostBtn" class="power-button" type="button">+20 秒 <small>1 次</small></button>
+            <button id="shieldBtn" class="power-button" type="button">护盾 <small>1 次</small></button>
+          </div>
+        </article>
+        <div class="versus">
+          <span>ROUND</span><strong id="roundNumber">1</strong><em>VS</em>
+        </div>
+        <article class="score-card duo">
+          <div><span class="side-tag">DUO</span><h2 id="displayB">双人战队</h2><small id="duoNames">B1 · B2</small></div>
+          <strong id="scoreB">0</strong>
+          <div class="power-row">
+            <button id="teamLinkBtn" class="power-button" type="button">协作 +20 秒 <small>2 次</small></button>
+          </div>
+        </article>
+      </div>
+
+      <nav class="round-nav" id="roundNav" aria-label="比赛关卡"></nav>
+
+      <div class="game-grid">
+        <aside class="match-panel">
+          <div class="round-meta">
+            <p id="roundKicker">第一关</p>
+            <h3 id="roundTitle">语法竞技场</h3>
+            <p id="roundDescription"></p>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-label"><span>本关进度</span><strong id="progressText">1 / 12</strong></div>
+            <div class="progress-track"><span id="progressBar"></span></div>
+          </div>
+          <div class="turn-card">
+            <span>当前主答</span>
+            <strong id="turnName">挑战者 A</strong>
+            <p id="turnHint">独立作答</p>
+            <em id="difficultyBadge">标准难度</em>
+          </div>
+          <div class="timer" id="timerBox">
+            <svg viewBox="0 0 120 120" aria-hidden="true">
+              <circle class="timer-bg" cx="60" cy="60" r="52"></circle>
+              <circle class="timer-ring" id="timerRing" cx="60" cy="60" r="52"></circle>
+            </svg>
+            <div><strong id="timerText">30</strong><span>SEC</span></div>
+          </div>
+          <button class="ghost-button wide" id="pauseBtn" type="button">暂停计时</button>
+        </aside>
+
+        <section class="question-stage">
+          <div id="passageBox" class="passage-box hidden"></div>
+          <div class="question-card" id="questionCard">
+            <div class="question-topline">
+              <span id="questionType">GRAMMAR</span>
+              <span id="questionPoints">+5 分</span>
+            </div>
+            <h2 id="questionPrompt"></h2>
+            <div id="wagerBox" class="wager-box hidden">
+              <span>本题押分</span>
+              <button type="button" data-wager="1">1</button>
+              <button type="button" data-wager="3" class="selected">3</button>
+              <button type="button" data-wager="5">5</button>
+            </div>
+            <button class="hint-button hidden" id="hintBtn" type="button">查看学习提示</button>
+            <div class="hint-panel hidden" id="hintPanel"></div>
+            <div id="answerArea" class="answer-area"></div>
+            <div id="feedback" class="feedback hidden"></div>
+            <div class="question-actions">
+              <button class="danger-button hidden" id="stealBtn" type="button">对方抢答</button>
+              <button class="primary-button hidden" id="nextBtn" type="button">下一题 <span>→</span></button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="finalScreen" class="screen final-screen hidden">
+      <div class="final-heading">
+        <p class="eyebrow">FINAL MISSION</p>
+        <h1>终极挑战 三句改变家乡</h1>
+        <p>使用全部六个词，写出三句连贯的英文。教师分别给两方 0–20 分。</p>
+      </div>
+      <div class="word-chips">
+        <span>bring about</span><span>high-tech</span><span>benefit</span><span>inspire</span><span>reflect</span><span>memory</span>
+      </div>
+      <div class="final-grid">
+        <label><strong id="finalNameA">挑战者 A</strong><textarea id="finalTextA" rows="7" placeholder="Write three connected sentences here..."></textarea></label>
+        <label><strong>双人战队 B</strong><textarea id="finalTextB" rows="7" placeholder="Write three connected sentences here..."></textarea></label>
+      </div>
+      <div class="judge-score">
+        <label>A 得分 <input id="finalScoreA" type="number" min="0" max="20" value="0"></label>
+        <label>B 得分 <input id="finalScoreB" type="number" min="0" max="20" value="0"></label>
+        <button class="primary-button" id="finishBtn" type="button">生成比赛结果</button>
+      </div>
+    </section>
+
+    <section id="resultScreen" class="screen result-screen hidden">
+      <div id="confetti" class="confetti" aria-hidden="true"></div>
+      <p class="eyebrow">MATCH COMPLETE</p>
+      <h1 id="winnerTitle">本局冠军</h1>
+      <p id="winnerSubtitle"></p>
+      <div class="result-score">
+        <article><span id="resultNameA">挑战者 A</span><strong id="resultScoreA">0</strong></article>
+        <em>:</em>
+        <article><span>双人战队 B</span><strong id="resultScoreB">0</strong></article>
+      </div>
+      <div class="result-stats" id="resultStats"></div>
+      <div class="review-card">
+        <div><h2>错题复盘</h2><p>点击题目查看答案和考点。</p></div>
+        <div id="reviewList" class="review-list"></div>
+      </div>
+      <div class="result-actions">
+        <button class="ghost-button" id="printBtn" type="button">打印结果</button>
+        <button class="primary-button" id="restartBtn" type="button">再来一局</button>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="teacherDialog">
+    <form method="dialog" class="dialog-card">
+      <div class="dialog-head"><h2>教师控制台</h2><button aria-label="关闭">×</button></div>
+      <p>可手动修正比分或结束本题。调整会立即保存。</p>
+      <div class="teacher-grid">
+        <div><strong>A 方比分</strong><button type="button" data-adjust="A,-1">−1</button><button type="button" data-adjust="A,1">+1</button><button type="button" data-adjust="A,5">+5</button></div>
+        <div><strong>B 方比分</strong><button type="button" data-adjust="B,-1">−1</button><button type="button" data-adjust="B,1">+1</button><button type="button" data-adjust="B,5">+5</button></div>
+      </div>
+      <div class="difficulty-control">
+        <strong>双人方学习难度</strong>
+        <div>
+          <button type="button" data-level="auto">自动</button>
+          <button type="button" data-level="1">基础</button>
+          <button type="button" data-level="2">引导</button>
+          <button type="button" data-level="3">挑战</button>
+        </div>
+        <small>自动模式会根据连续答对或失误调整提示、选项数量和答题时间。</small>
+      </div>
+      <button class="danger-button wide" id="forceNextBtn" type="button">跳过当前题</button>
+      <button class="text-button wide" id="clearSaveBtn" type="button">清除本机存档</button>
+    </form>
+  </dialog>
+
+  <script src="./app.js"></script>
+</body>
+</html>
