@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#153a5b">
-  <meta name="description" content="新人教版九年级上册期中英语一对二互动 PK 训练">
-  <title>九年级英语每日训练与课堂 PK</title>
+  <meta name="description" content="新人教版九年级英语两个月提分训练：从60分冲到90分，重点突破语法、词汇和阅读">
+  <title>九年级英语 60→90 两个月提分计划</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -24,25 +24,83 @@
   <main id="app" class="app-shell">
     <section id="homeScreen" class="screen home-screen">
       <div class="home-hero">
-        <p class="eyebrow">PEP GRADE 9  UNITS 1–4</p>
-        <h1>每天练一点<br><span>课堂再来一场</span></h1>
-        <p>同一套知识体系，两种学习节奏。日常用 15 分钟稳步积累，课堂用一对二 PK 检验掌握情况。</p>
+        <p class="eyebrow">8-WEEK SCORE BOOST · PEP GRADE 9</p>
+        <h1>从 60 分出发<br><span>两个月冲到 90</span></h1>
+        <p>专攻语法、词汇和阅读三项薄弱点。只在周五、周六、周日训练，系统按答题表现自动给提示、降难度或升级。</p>
+        <div class="score-journey"><strong>60</strong><span><i></i></span><strong>90</strong><em>目标 +30 分</em></div>
       </div>
       <div class="mode-grid">
-        <button class="mode-card daily" id="chooseDailyBtn" type="button">
+        <button class="mode-card plan" id="choosePlanBtn" type="button">
           <span class="mode-no">01</span>
+          <small>8-WEEK SCORE PLAN</small>
+          <h2>两个月提分计划</h2>
+          <p>每周三练，自动安排语法、词汇、阅读和阶段测评。记录预计分数、错题和完成进度。</p>
+          <strong>查看本周任务 →</strong>
+        </button>
+        <button class="mode-card daily" id="chooseDailyBtn" type="button">
+          <span class="mode-no">02</span>
           <small>DAILY PRACTICE</small>
           <h2>每日 15 分钟</h2>
           <p>每天 10 题，自动换题和调节难度。记录连续学习、星星和薄弱知识点。</p>
           <strong>开始今日练习 →</strong>
         </button>
         <button class="mode-card class" id="chooseClassBtn" type="button">
-          <span class="mode-no">02</span>
+          <span class="mode-no">03</span>
           <small>CLASSROOM BATTLE</small>
           <h2>课堂一对二 PK</h2>
           <p>单人挑战双人战队，包含计时、抢答、协作卡、动态难度和教师控制。</p>
           <strong>进入课堂模式 →</strong>
         </button>
+      </div>
+    </section>
+
+    <section id="planScreen" class="screen plan-screen hidden">
+      <button class="back-button" type="button" data-home>← 返回首页</button>
+      <div class="plan-head">
+        <div>
+          <p class="eyebrow">60 → 90 · 8 WEEKS</p>
+          <h1>本周提分作战室</h1>
+          <p id="planStageText">先把基础补稳，再把阅读正确率提起来。</p>
+        </div>
+        <div class="score-gauge">
+          <span>当前预计</span><strong id="planScore">60</strong><small>/ 120 分</small>
+          <div><i id="planScoreBar"></i></div>
+          <em>目标 90 分</em>
+        </div>
+      </div>
+
+      <div class="plan-summary">
+        <article><span>当前进度</span><strong>第 <b id="planWeek">1</b> 周 / 8</strong></article>
+        <article><span>已完成</span><strong><b id="planCompleted">0</b> / 24 次</strong></article>
+        <article><span>本周目标</span><strong id="planWeekTarget">先拿下基础分</strong></article>
+        <article><span>自适应难度</span><strong id="planSupport">基础扶持</strong></article>
+      </div>
+
+      <section class="today-mission">
+        <div class="mission-copy">
+          <span id="planDayBadge">今天任务</span>
+          <h2 id="planMissionTitle">词汇 + 语法基础</h2>
+          <p id="planMissionDetail">先认词义，再做基础语法。答错可以看提示并重试，不让孩子一上来就受挫。</p>
+          <div class="mission-tags" id="planMissionTags"></div>
+        </div>
+        <button class="primary-button mission-start" id="startPlanBtn" type="button"><span id="startPlanText">开始今天训练</span> →</button>
+      </section>
+
+      <div class="week-grid" id="weekGrid" aria-label="本周三次学习任务"></div>
+
+      <div class="plan-lower">
+        <section class="roadmap-card">
+          <div class="section-title"><span>八周路线</span><small>每两周一个台阶</small></div>
+          <div class="roadmap" id="roadmap"></div>
+        </section>
+        <section class="gain-card">
+          <div class="section-title"><span>30 分从哪里来</span><small>训练目标拆解</small></div>
+          <div class="gain-row"><b>阅读理解</b><span><i style="width:100%"></i></span><strong>+12</strong></div>
+          <div class="gain-row"><b>语法</b><span><i style="width:67%"></i></span><strong>+8</strong></div>
+          <div class="gain-row"><b>词汇 / 完形</b><span><i style="width:58%"></i></span><strong>+7</strong></div>
+          <div class="gain-row"><b>短文填空</b><span><i style="width:25%"></i></span><strong>+3</strong></div>
+          <p>预计分数依据训练完成度与答题正确率计算，仅用于观察进步趋势。</p>
+        </section>
       </div>
     </section>
 
@@ -122,7 +180,7 @@
 
     <section id="dailyScreen" class="screen daily-screen hidden" aria-live="polite">
       <div class="daily-top">
-        <div><p class="eyebrow">DAILY 15</p><h1><span id="dailyDisplayName">英语小达人</span> 的今日练习</h1></div>
+        <div><p class="eyebrow" id="dailyModeLabel">DAILY 15</p><h1 id="dailyTitle"><span id="dailyDisplayName">英语小达人</span> 的今日练习</h1></div>
         <div class="daily-metrics">
           <span>连续学习 <strong id="dailyStreak">1</strong> 天</span>
           <span>今日星星 <strong id="dailyStars">0</strong> ★</span>
@@ -151,7 +209,7 @@
 
     <section id="dailyResultScreen" class="screen daily-result-screen hidden">
       <p class="eyebrow">TODAY COMPLETE</p>
-      <h1>今天的 15 分钟完成了</h1>
+      <h1 id="dailyResultTitle">今天的 15 分钟完成了</h1>
       <p id="dailyResultMessage"></p>
       <div class="daily-result-ring"><strong id="dailyResultCorrect">0</strong><span>/ <b id="dailyResultTotal">10</b></span></div>
       <div class="daily-result-grid" id="dailyResultStats"></div>

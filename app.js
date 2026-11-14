@@ -171,20 +171,22 @@ function wager(prompt, answers, explanation) {
 
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries([
-  "homeScreen","dailySetupScreen","dailyScreen","dailyResultScreen","setupScreen","gameScreen","finalScreen","resultScreen","setupForm","resumeBtn","displayA","duoNames","scoreA","scoreB",
+  "homeScreen","planScreen","dailySetupScreen","dailyScreen","dailyResultScreen","setupScreen","gameScreen","finalScreen","resultScreen","setupForm","resumeBtn","displayA","duoNames","scoreA","scoreB",
   "roundNumber","roundNav","roundKicker","roundTitle","roundDescription","progressText","progressBar","turnName","turnHint","difficultyBadge",
   "timerBox","timerText","timerRing","questionCard","questionType","questionPoints","questionPrompt","answerArea","feedback",
   "passageBox","wagerBox","nextBtn","stealBtn","pauseBtn","timeBoostBtn","shieldBtn","teamLinkBtn","soundBtn","teacherBtn",
   "teacherDialog","forceNextBtn","clearSaveBtn","hintBtn","hintPanel","finalNameA","finalScoreA","finalScoreB","finishBtn","winnerTitle","winnerSubtitle",
   "resultNameA","resultScoreA","resultScoreB","resultStats","reviewList","printBtn","restartBtn","confetti",
-  "chooseDailyBtn","chooseClassBtn","dailySetupForm","dailyResumeBtn","todayDate","dailyDisplayName","dailyStreak","dailyStars","dailyClock",
+  "choosePlanBtn","chooseDailyBtn","chooseClassBtn","dailySetupForm","dailyResumeBtn","todayDate","dailyDisplayName","dailyStreak","dailyStars","dailyClock","dailyModeLabel","dailyTitle","dailyResultTitle",
   "dailyProgressBar","dailyRoute","dailyLevel","dailyPassage","dailyType","dailyCount","dailyPrompt","dailyHintBtn","dailyHint","dailyAnswerArea",
-  "dailyFeedback","dailyNextBtn","dailyResultMessage","dailyResultCorrect","dailyResultTotal","dailyResultStats","dailyReviewList","dailyAgainBtn"
+  "dailyFeedback","dailyNextBtn","dailyResultMessage","dailyResultCorrect","dailyResultTotal","dailyResultStats","dailyReviewList","dailyAgainBtn",
+  "planStageText","planScore","planScoreBar","planWeek","planCompleted","planWeekTarget","planSupport","planDayBadge","planMissionTitle","planMissionDetail","planMissionTags","startPlanBtn","startPlanText","weekGrid","roadmap"
 ].map(id => [id, $(id)]));
 
 const SAVE_KEY = "grade9EnglishBattleStateV1";
 const DAILY_KEY = "grade9EnglishDailySessionV1";
 const DAILY_PROGRESS_KEY = "grade9EnglishDailyProgressV1";
+const PLAN_PROGRESS_KEY = "grade9EnglishScorePlanV1";
 let state = freshState();
 let timerId = null;
 let dailyTimerId = null;
@@ -253,7 +255,7 @@ function load() {
 }
 
 function showScreen(screen) {
-  [els.homeScreen, els.dailySetupScreen, els.dailyScreen, els.dailyResultScreen, els.setupScreen, els.gameScreen, els.finalScreen, els.resultScreen].forEach(el => el.classList.add("hidden"));
+  [els.homeScreen, els.planScreen, els.dailySetupScreen, els.dailyScreen, els.dailyResultScreen, els.setupScreen, els.gameScreen, els.finalScreen, els.resultScreen].forEach(el => el.classList.add("hidden"));
   screen.classList.remove("hidden");
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -629,6 +631,114 @@ function buildDailyQueue(focus) {
   // Interleave categories so the ten minutes do not feel repetitive.
   return refs.sort((a, b) => ((a.index + dateSeed()) % 7) - ((b.index + dateSeed()) % 7));
 }
+
+const planMissions = {
+  fri: { day: "周五", title: "词汇 + 语法基础", detail: "先认词义和词形，再练时态、语态与固定搭配。答错可看提示并重试，把基础分稳稳拿住。", tags: ["10 个核心词", "5 道语法", "35 分钟"], seconds: 2100, plan: { vocab: 5, grammar: 5 } },
+  sat: { day: "周六", title: "阅读理解攻坚", detail: "先看题干关键词，再回原文定位证据。练细节题、主旨题和推断题，不靠猜答案。", tags: ["5 道阅读", "3 道完形", "50 分钟"], seconds: 3000, plan: { reading: 5, cloze: 3, vocab: 2 } },
+  sun: { day: "周日", title: "混合小测 + 错题回炉", detail: "把本周语法、词汇和阅读混合起来练。完成后只复盘错题，系统据此安排下周难度。", tags: ["10 题周测", "错题复盘", "45 分钟"], seconds: 2700, plan: { grammar: 2, vocab: 2, reading: 3, cloze: 2, fill: 1 } }
+};
+const planStages = [
+  { weeks: "第 1–2 周", title: "补基础", detail: "核心词 · 基础时态 · 阅读定位", target: "预计 67 分" },
+  { weeks: "第 3–4 周", title: "提正确率", detail: "被动语态 · 从句 · 主旨题", target: "预计 75 分" },
+  { weeks: "第 5–6 周", title: "练综合", detail: "完形逻辑 · 推断题 · 限时阅读", target: "预计 83 分" },
+  { weeks: "第 7–8 周", title: "冲刺 90", detail: "套题训练 · 错题清零 · 稳定速度", target: "预计 90 分" }
+];
+function loadPlanProgress() {
+  const base = { startDate: todayKey(), completedSlots: [], sessions: [], totalCorrect: 0, totalQuestions: 0 };
+  try {
+    const saved = JSON.parse(localStorage.getItem(PLAN_PROGRESS_KEY));
+    const result = { ...base, ...(saved || {}) };
+    if (!saved) localStorage.setItem(PLAN_PROGRESS_KEY, JSON.stringify(result));
+    return result;
+  } catch (_) {
+    localStorage.setItem(PLAN_PROGRESS_KEY, JSON.stringify(base));
+    return base;
+  }
+}
+function savePlanProgress(progress) { localStorage.setItem(PLAN_PROGRESS_KEY, JSON.stringify(progress)); }
+function currentPlanWeek(progress = loadPlanProgress()) {
+  const start = new Date(`${progress.startDate}T00:00:00`);
+  const elapsed = Math.max(0, Math.floor((new Date().setHours(0,0,0,0) - start.getTime()) / 86400000));
+  return Math.min(8, Math.max(1, Math.floor(elapsed / 7) + 1));
+}
+function todayPlanDay() {
+  const day = new Date().getDay();
+  return day === 6 ? "sat" : day === 0 ? "sun" : "fri";
+}
+function planSlot(week, day) { return `week-${week}-${day}`; }
+function estimatedPlanScore(progress) {
+  const completion = Math.min(1, progress.completedSlots.length / 24);
+  const accuracy = progress.totalQuestions ? progress.totalCorrect / progress.totalQuestions : .5;
+  return Math.min(90, 60 + Math.round(completion * (24 + accuracy * 6)));
+}
+function preparePlan() {
+  const progress = loadPlanProgress();
+  const week = currentPlanWeek(progress);
+  const stageIndex = Math.min(3, Math.floor((week - 1) / 2));
+  const stage = planStages[stageIndex];
+  const dayKey = todayPlanDay();
+  const mission = planMissions[dayKey];
+  const realStudyDay = [0,5,6].includes(new Date().getDay());
+  const score = estimatedPlanScore(progress);
+  els.planWeek.textContent = week;
+  els.planCompleted.textContent = progress.completedSlots.length;
+  els.planScore.textContent = score;
+  els.planScoreBar.style.width = `${Math.max(0, (score - 60) / 30 * 100)}%`;
+  els.planStageText.textContent = `${stage.weeks} · ${stage.title}：${stage.detail}`;
+  els.planWeekTarget.textContent = stage.target;
+  const support = Math.min(masteryFor("grammar").level, masteryFor("vocab").level, masteryFor("reading").level);
+  els.planSupport.textContent = levelName(support);
+  els.planDayBadge.textContent = realStudyDay ? `今天 · ${mission.day}` : `下一次训练 · ${mission.day}`;
+  els.planMissionTitle.textContent = mission.title;
+  els.planMissionDetail.textContent = mission.detail;
+  els.planMissionTags.innerHTML = mission.tags.map(tag => `<span>${tag}</span>`).join("");
+  const slot = planSlot(week, dayKey);
+  let resumable = false;
+  try { const saved = JSON.parse(localStorage.getItem(DAILY_KEY)); resumable = saved?.planMode && saved?.planSlot === slot && !saved.completed; } catch (_) {}
+  els.startPlanText.textContent = resumable ? "继续未完成任务" : (progress.completedSlots.includes(slot) ? "再练一次巩固" : "开始这次训练");
+  els.weekGrid.innerHTML = Object.entries(planMissions).map(([key, item]) => {
+    const done = progress.completedSlots.includes(planSlot(week, key));
+    return `<article class="day-card ${key === dayKey ? "active" : ""} ${done ? "done" : ""}"><span>${item.day.toUpperCase()}</span><h3>${item.title}</h3><p>${item.detail}</p><small>${done ? "✓ 已完成" : item.tags.join(" · ")}</small></article>`;
+  }).join("");
+  els.roadmap.innerHTML = planStages.map((item, i) => `<div class="road-step ${i === stageIndex ? "active" : ""}"><strong>${item.weeks} · ${item.title}</strong><span>${item.detail}<br>${item.target}</span></div>`).join("");
+  showScreen(els.planScreen);
+}
+function buildPlanQueue(dayKey, week) {
+  const refs = [];
+  Object.entries(planMissions[dayKey].plan).forEach(([id, count], i) => refs.push(...pickRefs(id, count, week * 11 + i * 7)));
+  return refs.sort((a, b) => ((a.index + week * 3) % 7) - ((b.index + week * 3) % 7));
+}
+function openDailySession() {
+  showScreen(els.dailyScreen);
+  els.dailyDisplayName.textContent = dailyState.name;
+  els.dailyModeLabel.textContent = dailyState.planMode ? `8-WEEK PLAN · ${planMissions[dailyState.planDay].day}` : "DAILY 15";
+  els.dailyResultTitle.textContent = dailyState.planMode ? "本次提分任务完成了" : "今天的 15 分钟完成了";
+  els.dailyStreak.textContent = Math.max(1, loadDailyProgress().streak || 1);
+  renderDailyQuestion();
+  startDailyTimer();
+  saveDaily();
+}
+function startPlanSession() {
+  clearInterval(dailyTimerId);
+  const progress = loadPlanProgress();
+  const week = currentPlanWeek(progress);
+  const dayKey = todayPlanDay();
+  const slot = planSlot(week, dayKey);
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(DAILY_KEY)); } catch (_) {}
+  if (saved?.planMode && saved?.planSlot === slot && !saved.completed) dailyState = saved;
+  else {
+    const mission = planMissions[dayKey];
+    dailyState = {
+      date: todayKey(), name: $("dailyName").value.trim() || "初三同学", focus: dayKey,
+      queue: buildPlanQueue(dayKey, week), index: 0, correct: 0, stars: 0, wrong: [],
+      secondsLeft: mission.seconds, totalSeconds: mission.seconds, usedChoices: [], retryUsed: false,
+      hintUsed: false, answered: false, completed: false, planMode: true, planDay: dayKey,
+      planWeek: week, planSlot: slot, sessionRecorded: false
+    };
+  }
+  openDailySession();
+}
 function prepareDailySetup() {
   els.todayDate.textContent = new Intl.DateTimeFormat("zh-CN", { month: "long", day: "numeric", weekday: "short" }).format(new Date());
   let resumable = false;
@@ -657,19 +767,17 @@ function startDaily(fromSave = false) {
       stars: 0,
       wrong: [],
       secondsLeft: 900,
+      totalSeconds: 900,
       usedChoices: [],
       retryUsed: false,
       hintUsed: false,
       answered: false,
-      completed: false
+      completed: false,
+      planMode: false,
+      sessionRecorded: false
     };
   }
-  showScreen(els.dailyScreen);
-  els.dailyDisplayName.textContent = dailyState.name;
-  els.dailyStreak.textContent = Math.max(1, loadDailyProgress().streak || 1);
-  renderDailyQuestion();
-  startDailyTimer();
-  saveDaily();
+  openDailySession();
 }
 function saveDaily() { localStorage.setItem(DAILY_KEY, JSON.stringify(dailyState)); }
 function currentDailyRef() { return dailyState.queue[dailyState.index]; }
@@ -816,6 +924,15 @@ function finishDaily() {
     progress.completedDates.push(todayKey());
     localStorage.setItem(DAILY_PROGRESS_KEY, JSON.stringify(progress));
   }
+  if (dailyState.planMode && !dailyState.sessionRecorded) {
+    const plan = loadPlanProgress();
+    if (!plan.completedSlots.includes(dailyState.planSlot)) plan.completedSlots.push(dailyState.planSlot);
+    plan.totalCorrect += dailyState.correct;
+    plan.totalQuestions += dailyState.queue.length;
+    plan.sessions.push({ date: todayKey(), slot: dailyState.planSlot, correct: dailyState.correct, total: dailyState.queue.length });
+    dailyState.sessionRecorded = true;
+    savePlanProgress(plan);
+  }
   saveDaily();
   showDailyResults();
 }
@@ -824,14 +941,16 @@ function showDailyResults() {
   const progress = loadDailyProgress();
   els.dailyResultCorrect.textContent = dailyState.correct;
   els.dailyResultTotal.textContent = dailyState.queue.length;
-  els.dailyResultMessage.textContent = `${dailyState.name} 今天获得 ${dailyState.stars} 颗星，已连续学习 ${progress.streak} 天。`;
-  const used = 900 - dailyState.secondsLeft;
-  els.dailyResultStats.innerHTML = `<div class="stat"><strong>${dailyState.stars} ★</strong><span>今日星星</span></div><div class="stat"><strong>${Math.floor(used/60)}分${used%60}秒</strong><span>学习时间</span></div><div class="stat"><strong>${progress.totalDays}</strong><span>累计学习天数</span></div>`;
+  const plan = dailyState.planMode ? loadPlanProgress() : null;
+  els.dailyResultMessage.textContent = dailyState.planMode ? `${dailyState.name} 完成第 ${dailyState.planWeek} 周任务，预计分数已到 ${estimatedPlanScore(plan)} 分。` : `${dailyState.name} 今天获得 ${dailyState.stars} 颗星，已连续学习 ${progress.streak} 天。`;
+  const used = (dailyState.totalSeconds || 900) - dailyState.secondsLeft;
+  els.dailyResultStats.innerHTML = `<div class="stat"><strong>${dailyState.stars} ★</strong><span>本次星星</span></div><div class="stat"><strong>${Math.floor(used/60)}分${used%60}秒</strong><span>学习时间</span></div><div class="stat"><strong>${dailyState.planMode ? `${plan.completedSlots.length}/24` : progress.totalDays}</strong><span>${dailyState.planMode ? "提分任务" : "累计学习天数"}</span></div>`;
   els.dailyReviewList.innerHTML = dailyState.wrong.length ? dailyState.wrong.map(w => `<details class="review-item"><summary>${escapeHtml(w.prompt)}</summary><div>你的答案：${escapeHtml(String(w.given))}<br>正确答案：<b>${escapeHtml(w.answer)}</b><br>${escapeHtml(w.explanation)}</div></details>`).join("") : "<p>今天全部答对，明天系统会适当提高挑战。</p>";
 }
 function practiceDailyWrongs() {
   const queue = dailyState.wrong.length ? dailyState.wrong.map(w => w.ref) : dailyState.queue;
-  dailyState = { ...dailyState, queue, index: 0, correct: 0, stars: 0, wrong: [], secondsLeft: 900, completed: false };
+  const retrySeconds = dailyState.planMode ? Math.min(900, dailyState.totalSeconds || 900) : 900;
+  dailyState = { ...dailyState, queue, index: 0, correct: 0, stars: 0, wrong: [], secondsLeft: retrySeconds, totalSeconds: retrySeconds, completed: false, sessionRecorded: true };
   showScreen(els.dailyScreen);
   renderDailyQuestion();
   startDailyTimer();
@@ -901,6 +1020,8 @@ function escapeHtml(text) {
 }
 
 els.setupForm.addEventListener("submit", e => { e.preventDefault(); startGame(false); });
+els.choosePlanBtn.addEventListener("click", preparePlan);
+els.startPlanBtn.addEventListener("click", startPlanSession);
 els.chooseDailyBtn.addEventListener("click", prepareDailySetup);
 els.chooseClassBtn.addEventListener("click", () => showScreen(els.setupScreen));
 document.querySelectorAll("[data-home]").forEach(btn => btn.addEventListener("click", () => { clearInterval(timerId); clearInterval(dailyTimerId); showScreen(els.homeScreen); }));

@@ -44,23 +44,75 @@ button { cursor: pointer; }
 .app-shell { max-width: 1500px; margin: auto; padding: 18px 34px 56px; }
 .screen { min-height: calc(100vh - 150px); }
 
-.home-screen { display: grid; grid-template-columns: .8fr 1.2fr; align-items: center; gap: clamp(30px, 6vw, 90px); padding: 5vh 4vw; }
+.home-screen { display: grid; grid-template-columns: .75fr 1.25fr; align-items: center; gap: clamp(30px, 5vw, 72px); padding: 3vh 2vw; }
 .home-hero h1, .daily-setup-copy h1 { font: 700 clamp(50px, 6vw, 84px)/1.05 Georgia, "Songti SC", serif; margin: 16px 0 22px; letter-spacing: -.035em; }
 .home-hero h1 span { color: var(--blue); }
 .home-hero > p:last-child, .daily-setup-copy > p:last-child { max-width: 590px; color: #41586d; font-size: 18px; line-height: 1.75; }
-.mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-.mode-card { min-height: 430px; padding: 28px; border: 0; border-radius: 26px; text-align: left; color: white; position: relative; overflow: hidden; box-shadow: var(--shadow); transition: transform .2s ease, box-shadow .2s ease; }
+.score-journey { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; max-width: 510px; margin-top: 25px; }
+.score-journey strong { font: 800 27px Georgia, serif; color: var(--navy); }
+.score-journey span { height: 8px; overflow: hidden; border-radius: 99px; background: #dce7e9; }
+.score-journey i { display: block; width: 22%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--cyan), var(--blue)); }
+.score-journey em { grid-column: 1 / -1; color: var(--blue); font-style: normal; font-size: 12px; font-weight: 900; text-align: right; }
+.mode-grid { display: grid; grid-template-columns: 1.2fr .9fr; gap: 14px; }
+.mode-card { min-height: 300px; padding: 24px; border: 0; border-radius: 24px; text-align: left; color: white; position: relative; overflow: hidden; box-shadow: var(--shadow); transition: transform .2s ease, box-shadow .2s ease; }
+.mode-card.plan { grid-row: span 2; min-height: 614px; background: linear-gradient(155deg, #8b3a30, #c46245); }
 .mode-card:hover { transform: translateY(-6px); box-shadow: 0 30px 80px rgba(16,42,67,.22); }
 .mode-card.daily { background: linear-gradient(155deg, #176b65, #2b9a86); }
 .mode-card.class { background: linear-gradient(155deg, #153a5b, #315d80); }
 .mode-card::after { content: ""; position: absolute; width: 260px; height: 260px; right: -90px; bottom: -90px; border: 1px solid rgba(255,255,255,.22); border-radius: 50%; box-shadow: 0 0 0 35px rgba(255,255,255,.035), 0 0 0 70px rgba(255,255,255,.025); }
-.mode-no { display: block; font: 700 70px Georgia, serif; color: rgba(255,255,255,.2); line-height: 1; }
-.mode-card small { display: block; margin-top: 34px; color: var(--cyan); font-weight: 900; letter-spacing: .14em; }
-.mode-card h2 { margin: 9px 0 15px; font: 700 32px Georgia, "Songti SC", serif; }
+.mode-no { display: block; font: 700 58px Georgia, serif; color: rgba(255,255,255,.2); line-height: 1; }
+.mode-card small { display: block; margin-top: 20px; color: var(--cyan); font-weight: 900; letter-spacing: .14em; }
+.mode-card.plan small { margin-top: 70px; color: #ffe3ac; }
+.mode-card h2 { margin: 7px 0 12px; font: 700 29px Georgia, "Songti SC", serif; }
+.mode-card.plan h2 { font-size: 38px; }
 .mode-card p { color: rgba(255,255,255,.78); line-height: 1.75; }
 .mode-card strong { position: absolute; left: 28px; bottom: 30px; z-index: 1; }
 .back-button { position: absolute; top: 94px; left: max(34px, calc((100vw - 1500px)/2 + 34px)); border: 0; background: transparent; color: var(--blue); font-weight: 800; }
 .setup-back { top: 94px; }
+
+.plan-screen { padding: 6vh 2vw 4vh; }
+.plan-head { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 24px; }
+.plan-head h1 { margin: 8px 0; font: 700 clamp(42px, 5vw, 68px)/1.08 Georgia, "Songti SC", serif; }
+.plan-head > div:first-child > p:last-child { color: var(--muted); font-size: 17px; }
+.score-gauge { width: 230px; padding: 23px; color: white; border-radius: 22px; background: var(--navy); box-shadow: var(--shadow); }
+.score-gauge span, .score-gauge small, .score-gauge em { color: rgba(255,255,255,.68); font-size: 11px; font-style: normal; }
+.score-gauge strong { margin: 0 5px; color: var(--cyan); font: 800 52px Georgia, serif; }
+.score-gauge > div { height: 7px; margin: 12px 0 8px; overflow: hidden; border-radius: 99px; background: rgba(255,255,255,.18); }
+.score-gauge i { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--cyan); transition: width .4s ease; }
+.plan-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 26px 0 16px; }
+.plan-summary article { padding: 17px 19px; border: 1px solid var(--line); border-radius: 15px; background: rgba(255,255,255,.72); }
+.plan-summary span { display: block; margin-bottom: 6px; color: var(--muted); font-size: 11px; font-weight: 800; }
+.plan-summary strong { color: var(--navy); }
+.today-mission { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 24px; padding: 28px; border-radius: 22px; color: white; background: linear-gradient(120deg, #153a5b, #1f6f8b); box-shadow: var(--shadow); }
+.mission-copy > span { display: inline-block; padding: 5px 9px; border-radius: 99px; color: #533a00; background: var(--gold); font-size: 10px; font-weight: 900; }
+.mission-copy h2 { margin: 10px 0 6px; font: 700 31px Georgia, "Songti SC", serif; }
+.mission-copy p { margin: 0; max-width: 820px; color: rgba(255,255,255,.73); line-height: 1.65; }
+.mission-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+.mission-tags span { padding: 6px 10px; border: 1px solid rgba(255,255,255,.25); border-radius: 99px; font-size: 11px; font-weight: 800; }
+.mission-start { min-width: 190px; min-height: 58px; color: var(--navy); background: var(--cyan); }
+.week-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0; }
+.day-card { padding: 20px; border: 1px solid var(--line); border-radius: 17px; background: white; }
+.day-card.active { border-color: var(--blue); box-shadow: 0 12px 30px rgba(31,111,139,.12); }
+.day-card.done { background: #edf8f5; }
+.day-card > span { color: var(--blue); font-size: 11px; font-weight: 900; letter-spacing: .1em; }
+.day-card h3 { margin: 7px 0; }
+.day-card p { min-height: 42px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+.day-card small { display: block; margin-top: 12px; color: #577085; font-weight: 800; }
+.day-card.done small { color: var(--green); }
+.plan-lower { display: grid; grid-template-columns: 1.25fr .75fr; gap: 16px; }
+.roadmap-card, .gain-card { padding: 23px; border: 1px solid var(--line); border-radius: 18px; background: rgba(255,255,255,.75); }
+.section-title { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.section-title span { font: 700 22px Georgia, "Songti SC", serif; }
+.section-title small { color: var(--muted); }
+.roadmap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; }
+.road-step { padding: 14px; border-radius: 13px; background: #edf2f5; }
+.road-step.active { color: white; background: var(--blue); }
+.road-step strong { display: block; margin-bottom: 6px; }
+.road-step span { font-size: 11px; line-height: 1.5; }
+.gain-row { display: grid; grid-template-columns: 86px 1fr 34px; align-items: center; gap: 9px; margin: 13px 0; font-size: 12px; }
+.gain-row > span { height: 7px; overflow: hidden; border-radius: 99px; background: #e1e9ed; }
+.gain-row i { display: block; height: 100%; border-radius: inherit; background: var(--blue); }
+.gain-card > p { margin: 18px 0 0; color: var(--muted); font-size: 11px; line-height: 1.55; }
 
 .daily-setup-screen { display: grid; grid-template-columns: 1fr .72fr; align-items: center; gap: clamp(40px, 7vw, 110px); padding: 8vh 6vw; }
 .today-badge { display: flex; align-items: center; justify-content: space-between; padding: 14px 15px; border-radius: 13px; background: #edf8f5; color: #28685b; }
@@ -258,6 +310,9 @@ dialog::backdrop { background: rgba(12,32,50,.5); backdrop-filter: blur(4px); }
 @media (max-width: 900px) {
   .home-screen, .daily-setup-screen { grid-template-columns: 1fr; }
   .mode-grid { max-width: 760px; }
+  .mode-card.plan { min-height: 480px; }
+  .plan-summary { grid-template-columns: 1fr 1fr; }
+  .plan-lower { grid-template-columns: 1fr; }
   .daily-layout { grid-template-columns: 1fr; }
   .daily-map { display: grid; grid-template-columns: 1fr auto; }
   .daily-map > p, #dailyRoute { grid-column: 1; }
@@ -280,7 +335,15 @@ dialog::backdrop { background: rgba(12,32,50,.5); backdrop-filter: blur(4px); }
   .home-screen { padding: 3vh 0; }
   .home-hero h1, .daily-setup-copy h1 { font-size: 46px; }
   .mode-grid { grid-template-columns: 1fr; }
+  .mode-card.plan { grid-row: auto; min-height: 390px; }
   .mode-card { min-height: 340px; }
+  .plan-screen { padding-top: 9vh; }
+  .plan-head { grid-template-columns: 1fr; }
+  .score-gauge { width: auto; }
+  .plan-summary, .week-grid { grid-template-columns: 1fr; }
+  .today-mission { grid-template-columns: 1fr; }
+  .mission-start { width: 100%; }
+  .roadmap { grid-template-columns: 1fr 1fr; }
   .daily-top { align-items: flex-start; flex-direction: column; }
   .daily-metrics { justify-content: flex-start; }
   .daily-map { display: block; }
